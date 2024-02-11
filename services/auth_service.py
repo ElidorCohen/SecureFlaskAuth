@@ -34,7 +34,6 @@ class AuthenticationService:
         database = Database(Config.DATABASE_CONFIG)
         user = User.find_by_username(database, username)
         if user and User.verify_password(user.hashed_password, password):
-            print("User authenticated.")
             return True
         return False
 

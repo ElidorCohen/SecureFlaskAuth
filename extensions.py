@@ -7,7 +7,7 @@ from flask_limiter.util import get_remote_address
 # user can make more than 5 requests per hour by default across all routes.
 # This provides basic protection against DDoS attacks and brute-force attempts.
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["5 per hour"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["10 per hour"])
 
 
 
