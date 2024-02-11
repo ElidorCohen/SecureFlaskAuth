@@ -8,7 +8,7 @@ from flask_app import create_app
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(name)s : %(message)s',
                     handlers=[
-                        logging.FileHandler("application.log"),  # Writes logs to an external file
+                        logging.FileHandler("../application.log"),  # Writes logs to an external file
                         logging.StreamHandler()
                     ])
 

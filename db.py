@@ -1,6 +1,4 @@
-import mysql.connector
 from mysql.connector import pooling
-import bcrypt
 import logging
 
 logger = logging.getLogger(__name__)
