@@ -14,6 +14,7 @@ http://13.42.164.38:5000/swagger/
 
 # API Endpoint Explanations:
 ## /auth/register 
+### post
 ```
 {
   "username": "string",
@@ -24,6 +25,7 @@ http://13.42.164.38:5000/swagger/
 Allows a new user to register by providing a valid username, password, and phone number. The username and password must be at least 8 characters long. The phone number should follow the format 0508464336. The phone number should be valid and working.
 
 ## /auth/login
+### post
 ```
 {
   "username": "string",
@@ -33,6 +35,7 @@ Allows a new user to register by providing a valid username, password, and phone
 Users provide their registered username and password for authentication. Upon successful login, an SMS with an OTP (One-Time Password) is sent to the user's registered phone number and a session ID will be returned. However, the user is not fully authenticated at this stage and has not yet received a JWT until completed the entire multi-factor authentication.
 
 ## /auth/verify-otp
+### post
 ```
 {
   "session_id": "string",
