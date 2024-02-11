@@ -100,7 +100,105 @@ class User:
             cursor.close()
             conn.close()
 
+    @classmethod
+    def update_user_document(cls, database, username, session_id, otp, otp_expiration):
+        """
+        Updates the user's document in the database with MFA-related fields.
 
+        :param database: The database connection object.
+        :param username: The username of the user to update.
+        :param session_id: The generated session ID for MFA.
+        :param otp: The generated One-Time Password.
+        :param otp_expiration: The expiration time of the OTP.
+        """
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                UPDATE appusers 
+                SET session_id = %s, otp = %s, otp_expiration_time = %s 
+                WHERE username = %s
+            """, (session_id, otp, otp_expiration, username))
+            conn.commit()
+        except mysql.connector.Error as err:
+            print(f"Error updating user document: {err}")
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def get_phone_number(cls, database, username):
+        """
+        Retrieves the phone number of the user by username.
+
+        :param database: The database connection object.
+        :param username: The username to search for.
+        :return: The phone number of the user if found, None otherwise.
+        """
+        conn = database.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("SELECT phone_number FROM appusers WHERE username = %s", (username,))
+            user_record = cursor.fetchone()
+            if user_record:
+                return user_record['phone_number']
+            else:
+                return None
+        except mysql.connector.Error as err:
+            print(f"Error fetching user's phone number: {err}")
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def get_user_by_session_id(cls, database, session_id):
+        """
+        Retrieves user information by session ID.
+
+        :param database: The database connection object.
+        :param session_id: The session ID to search for.
+        :return: A dictionary of user information if found, None otherwise.
+        """
+        conn = database.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute("SELECT * FROM appusers WHERE session_id = %s", (session_id,))
+            user_record = cursor.fetchone()
+            return user_record
+        except mysql.connector.Error as err:
+            print(f"Error fetching user by session ID: {err}")
+            return None
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def clear_mfa_fields(cls, database, username):
+        """
+        Clears MFA-related fields for a user identified by username, setting the
+        'session_id' and 'otp' fields to an empty string and expiring 'otp_expiration_time'
+        by setting it to the current timestamp.
+
+        :param database: The database connection object.
+        :param username: The username of the user whose MFA fields are to be cleared.
+        """
+        conn = database.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                UPDATE appusers 
+                SET session_id = '', otp = '', otp_expiration_time = NOW()
+                WHERE username = %s
+            """, (username,))
+            conn.commit()
+        except mysql.connector.Error as err:
+            print(f"Error clearing MFA fields for user {username}: {err}")
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
 
 
 
