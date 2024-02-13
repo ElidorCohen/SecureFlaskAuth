@@ -23,10 +23,10 @@ class MFAService:
         """
         url = "https://api.sms4free.co.il/ApiSMS/v2/SendSMS"
         data = {
-            "key": "EPkIEkvSR",
-            "user": "0508464336",
+            "key": Config.sms_key,
+            "user": Config.sms_user,
             "sender": "Elidor",
-            "pass": "40381146",
+            "pass": Config.sms_pass,
             "recipient": recipient,
             "msg": f"Your OTP is: {otp}"
         }
